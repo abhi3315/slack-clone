@@ -1,20 +1,24 @@
+const express = require('express')
 const mongoose = require('mongoose')
+const fileUpload = require('express-fileupload')
+require('dotenv').config()
 
-const channelSchema = new mongoose.Schema({
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
-    details: {
-        type: String,
-        trim: true
-    },
-    name: {
-        type: String,
-        trim: true
-    }
+const app = express()
+
+const { mongodbUri } = process.env
+mongoose.connect(mongodbUri, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}).then(connection => {
+    console.log('mongoDB connected to ' + connection.connection.host)
+}).catch(err => {
+    console.log(err)
+    process.exit(1)
 })
 
-const Channel = mongoose.model('Channel', channelSchema)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(fileUpload())
 
-module.exports = Channel
+app.listen(3000, () => console.log('Server is running'))
