@@ -94,7 +94,7 @@ class Register extends Component {
                             />
                             <Button
                                 className={loading ? "loading" : ""}
-                                color="orage"
+                                color="orange"
                                 fluid
                                 size="large"
                             >
@@ -109,7 +109,7 @@ class Register extends Component {
                         </Message>
                     )}
                     <Message>
-                        Already a user? Login
+                        Already a user? <Link to="/login">Login</Link>
                     </Message>
                 </Grid.Column>
             </Grid>

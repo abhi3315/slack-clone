@@ -86,7 +86,7 @@ class Login extends Component {
                         </Message>
                     )}
                     <Message>
-                        Don't have an account? Register
+                        Don't have an account? <Link to="/register">Register</Link>
                     </Message>
                 </Grid.Column>
             </Grid>
