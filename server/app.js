@@ -1,7 +1,19 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const fileUpload = require('express-fileupload')
+const cors = require('cors')
+const Pusher = require('pusher')
 require('dotenv').config()
+
+const { appId, key, secret, cluster } = process.env
+
+const pusher = new Pusher({
+    appId,
+    key,
+    secret,
+    cluster,
+    useTLS: true
+});
 
 const app = express()
 
@@ -17,8 +29,34 @@ mongoose.connect(mongodbUri, {
     process.exit(1)
 })
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload())
 
-app.listen(3000, () => console.log('Server is running'))
+const db = mongoose.connection
+
+db.on('error', console.error.bind(console, 'Connection Error:'))
+
+const port = process.env.PORT || 5000
+db.once('open', () => {
+    app.listen(port, () => {
+        console.log(`Server is up on port ${port}!`)
+    })
+
+    const messageCollection = db.collection('messages')
+    const messageChangeStream = messageCollection.watch()
+
+    messageChangeStream.on('change', (change) => {
+        console.log(change)
+
+        if (change.operationType === 'insert') {
+            const message = change.fullDocument
+            pusher.trigger(
+                'messages',
+                'inserted',
+                { ...message }
+            )
+        }
+    })
+})
