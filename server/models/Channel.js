@@ -2,9 +2,16 @@ const mongoose = require('mongoose')
 
 const channelSchema = new mongoose.Schema({
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+            unique: true
+        },
+        avatar: {
+            type: String,
+            trim: true
+        },
     },
     details: {
         type: String,
@@ -15,6 +22,12 @@ const channelSchema = new mongoose.Schema({
         trim: true,
         required: true
     }
+})
+
+channelSchema.virtual('messages', {
+    ref: 'Message',
+    localField: '_id',
+    foreignField: 'channel'
 })
 
 const Channel = mongoose.model('Channel', channelSchema)

@@ -1,9 +1,14 @@
+const path = require('path')
 const express = require('express')
 const mongoose = require('mongoose')
 const fileUpload = require('express-fileupload')
 const cors = require('cors')
 const Pusher = require('pusher')
 require('dotenv').config()
+
+const userRouter = require('./routes/user')
+const messageRouter = require('./routes/message')
+const channelRouter = require('./routes/channel')
 
 const { appId, key, secret, cluster } = process.env
 
@@ -30,9 +35,14 @@ mongoose.connect(mongodbUri, {
 })
 
 app.use(cors())
+app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload())
+
+app.use(userRouter)
+app.use(messageRouter)
+app.use(channelRouter)
 
 const db = mongoose.connection
 
@@ -56,6 +66,22 @@ db.once('open', () => {
                 'messages',
                 'inserted',
                 { ...message }
+            )
+        }
+    })
+
+    const channelCollection = db.collection('channels')
+    const channelChangeStream = channelCollection.watch()
+
+    channelChangeStream.on('change', (change) => {
+        console.log(change)
+
+        if (change.operationType === 'insert') {
+            const channel = change.fullDocument
+            pusher.trigger(
+                'channels',
+                'inserted',
+                { ...channel }
             )
         }
     })
