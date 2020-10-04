@@ -13,8 +13,7 @@ const messageSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true,
-            trim: true,
-            unique: true
+            trim: true
         },
         avatar: {
             type: String,

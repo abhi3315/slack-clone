@@ -5,8 +5,7 @@ const channelSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true,
-            trim: true,
-            unique: true
+            trim: true
         },
         avatar: {
             type: String,
@@ -23,6 +22,10 @@ const channelSchema = new mongoose.Schema({
         required: true
     }
 })
+
+channelSchema.set('toObject', { virtuals: true })
+
+channelSchema.set('toJSON', { virtuals: true })
 
 channelSchema.virtual('messages', {
     ref: 'Message',

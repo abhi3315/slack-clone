@@ -3,6 +3,7 @@ const Message = require('../models/Message')
 
 exports.createMessage = async (req, res) => {
     try {
+        req.body.user = {}
         req.body.user.name = req.user.name
         req.body.user.avatar = req.user.avatar
         if (req.files) {
@@ -14,8 +15,8 @@ exports.createMessage = async (req, res) => {
             })
             req.body.image = `/message/${newFileName}`
         }
-        const message = await (await Message.create({ ...req.body })).populate('user')
-        res.status(201).send({ message })
+        const message = await Message.create({ ...req.body })
+        res.status(201).send(message)
     } catch (e) {
         res.status(400).send(e)
     }
@@ -23,8 +24,8 @@ exports.createMessage = async (req, res) => {
 
 exports.getAllMessage = async (req, res) => {
     try {
-        const messages = await Message.find().populate('user')
-        res.status(201).send(messages)
+        const messages = await Message.find().populate('channel')
+        res.status(200).send(messages)
     } catch (e) {
         res.status(400).send(e)
     }

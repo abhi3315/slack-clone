@@ -17,11 +17,11 @@ exports.createChannel = async (req, res) => {
 
 exports.getAllChannel = async (req, res) => {
     try {
-        const channels = await (await Channel.find()).populate({
-            path: 'messages',
-            options: { sort: { createdAt: 1 } }
-        }).execPopulate()
-        res.send(201).send(channels)
+        const channels = await Channel.findOne({})
+            .populate({ path: 'messages' })
+            .sort({ createdAt: 1 })
+            .exec()
+        res.status(200).send(channels)
     } catch (e) {
         res.status(400).send(e)
     }

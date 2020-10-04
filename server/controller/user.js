@@ -1,7 +1,10 @@
 const User = require('../models/User')
+var gravatar = require('gravatar')
 
 exports.create = async (req, res) => {
     const user = new User(req.body)
+    const url = gravatar.url(user.email, { s: '100' })
+    user.avatar = url
     try {
         await user.save()
         const token = await user.generateAuthToken()
