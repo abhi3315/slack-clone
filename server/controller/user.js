@@ -51,3 +51,7 @@ exports.changeAvatar = async (req, res) => {
         res.status(500).send()
     }
 }
+
+exports.getUser = async (req, res) => {
+    res.send(req.user)
+}
