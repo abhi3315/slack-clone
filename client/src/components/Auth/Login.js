@@ -9,6 +9,7 @@ import {
     Icon
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
+import { loginUser } from '../../helper/api'
 
 class Login extends Component {
     state = {
@@ -26,14 +27,34 @@ class Login extends Component {
         this.setState({ [e.target.name]: e.target.value })
     }
 
-    handleSubmit() {
-        //handle form submission
+    handleSubmit = e => {
+        e.preventDefault()
+        if (this.isFormValid(this.state)) {
+            this.setState({ errors: [], loading: true })
+            loginUser(this.state).then(user => {
+                if (!user) {
+                    this.setState({
+                        errors: this.state.errors.concat({ message: 'Unable to login. Try again later!' }),
+                        loading: false,
+                    })
+                    return
+                }
+                this.props.history.push("/");
+            }).catch(err => {
+                this.setState({
+                    errors: this.state.errors.concat(err),
+                    loading: false,
+                })
+            })
+        }
     }
 
+    isFormValid = ({ email, password }) => email && password
+
     handleInputError = (errors, inputName) => {
-        return errors.some(error => error.message.toLowerCase().includes(inputName)) ?
-            "error" :
-            ""
+        return errors.some(error => error.message.toLowerCase().includes(inputName))
+            ? "error"
+            : ""
     }
 
     render() {

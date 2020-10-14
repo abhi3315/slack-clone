@@ -11,7 +11,7 @@ exports.createChannel = async (req, res) => {
         }).execPopulate()
         res.status(201).send({ channel })
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send({ error: e.message })
     }
 }
 
@@ -23,6 +23,6 @@ exports.getAllChannel = async (req, res) => {
             .exec()
         res.status(200).send(channels)
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send({ error: e.message })
     }
 }

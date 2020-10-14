@@ -18,7 +18,7 @@ exports.createMessage = async (req, res) => {
         const message = await Message.create({ ...req.body })
         res.status(201).send(message)
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send({ error: e.message })
     }
 }
 
@@ -27,6 +27,6 @@ exports.getAllMessage = async (req, res) => {
         const messages = await Message.find().populate('channel')
         res.status(200).send(messages)
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send({ error: e.message })
     }
 }

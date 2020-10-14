@@ -10,7 +10,7 @@ exports.create = async (req, res) => {
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send({ error: e.message })
     }
 }
 
@@ -20,7 +20,7 @@ exports.login = async (req, res) => {
         const token = await user.generateAuthToken()
         res.send({ user, token })
     } catch (e) {
-        res.status(400).send()
+        res.status(400).send({ error: e.message })
     }
 }
 
@@ -30,7 +30,7 @@ exports.logout = async (req, res) => {
         await req.user.save()
         res.send()
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send({ error: e.message })
     }
 }
 
@@ -48,7 +48,7 @@ exports.changeAvatar = async (req, res) => {
             res.send(req.user)
         }
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send({ error: e.message })
     }
 }
 

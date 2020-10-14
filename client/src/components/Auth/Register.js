@@ -5,14 +5,14 @@ import {
     Segment,
     Button,
     Header,
-    Message,
-    Icon
+    Message
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
+import { registerUser } from '../../helper/api'
 
 class Register extends Component {
     state = {
-        username: "",
+        name: "",
         email: "",
         password: "",
         passwordConfirmation: "",
@@ -20,26 +20,79 @@ class Register extends Component {
         loading: false,
     }
 
-    displayErrors = errors => {
-        errors.map((error, i) => <p key={i} >{error.message}</p>)
+    isFormValid = () => {
+        let errors = []
+        let error
+
+        if (this.isFormEmpty(this.state)) {
+            error = { message: "Fill in all fields " }
+            this.setState({ errors: errors.concat(error) })
+            return false
+        } else if (!this.isPasswordValid(this.state)) {
+            error = { message: "Password is invalid" }
+            this.setState({ errors: errors.concat(error) })
+            return false
+        } else {
+            return true
+        }
     }
+
+    isFormEmpty = ({ name, email, password, passwordConfirmation }) => {
+        return (
+            !name.length ||
+            !email.length ||
+            !password.length ||
+            !passwordConfirmation.length
+        )
+    }
+
+    isPasswordValid = ({ password, passwordConfirmation }) => {
+        if (password.length < 6 || passwordConfirmation.length < 6) {
+            return false
+        } else if (password !== passwordConfirmation) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    displayErrors = errors =>
+        errors.map((error, i) => <p key={i}>{error.message}</p>)
 
     handleChange = e => {
         this.setState({ [e.target.name]: e.target.value })
     }
 
-    handleSubmit() {
-        //handle form submission
+    handleSubmit = e => {
+        e.preventDefault()
+        if (this.isFormValid()) {
+            this.setState({ errors: [], loading: true })
+            registerUser(this.state).then(user => {
+                if (!user) {
+                    this.setState({
+                        errors: this.state.errors.concat({ message: 'Unable to register. Try again later!' }),
+                        loading: false,
+                    })
+                    return
+                }
+                this.props.history.push("/");
+            }).catch(err => {
+                this.setState({
+                    errors: this.state.errors.concat(err),
+                    loading: false,
+                })
+            })
+        }
     }
 
     handleInputError = (errors, inputName) => {
-        return errors.some(error => error.message.toLowerCase().includes(inputName)) ?
-            "error" :
-            ""
+        return errors.some(error => error.message.toLowerCase().includes(inputName))
+            ? "error"
+            : ""
     }
 
     render() {
-        const { username, email, password, passwordConfirmation, errors, loading } = this.state
+        const { name, email, password, passwordConfirmation, errors, loading } = this.state
 
         return (
             <Grid textAlign="center" verticalAlign="middle" className="app" >
@@ -51,12 +104,12 @@ class Register extends Component {
                         <Segment stacked >
                             <Form.Input
                                 fluid
-                                name='username'
+                                name='name'
                                 icon="user"
                                 iconPosition="left"
                                 placeholder="Username"
                                 onChange={this.handleChange}
-                                value={username}
+                                value={name}
                                 type="text"
                             />
                             <Form.Input

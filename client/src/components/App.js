@@ -1,29 +1,36 @@
-import React from 'react'
-import {
-  Switch,
-  Route,
-  withRouter
-} from 'react-router-dom'
-import Login from './Auth/Login'
-import Register from './Auth/Register'
-import ProgressBar from './Messages/ProgressBar'
-import ProgresBar from './Messages/ProgressBar'
+import React from "react"
+import { Grid } from "semantic-ui-react"
+import { connect } from "react-redux"
+import SidePanel from "./SidePanel/SidePanel"
+import Messages from "./Messages/Messages"
+import MetaPanel from "./MetaPanel/MetaPanel"
 
-class App extends React.Component {
+const App = ({ currentUser, currentChannel, userPosts }) => (
+  <Grid columns="equal" className="app" style={{ background: "#eee" }}>
+    <SidePanel key={currentUser && currentUser.uid} currentUser={currentUser} />
 
-  render() {
-    return (
-      <div>
-        <Switch>
-          <Route exact path="/" >
-            <ProgressBar uploadState="uploading" percentUploaded="70" />
-          </Route>
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-        </Switch>
-      </div>
-    )
-  }
-}
+    <Grid.Column style={{ marginLeft: 270 }}>
+      <Messages
+        key={currentChannel && currentChannel.id}
+        currentChannel={currentChannel}
+        currentUser={currentUser}
+      />
+    </Grid.Column>
 
-export default App
+    <Grid.Column width={4}>
+      <MetaPanel
+        key={currentChannel && currentChannel.id}
+        userPosts={userPosts}
+        currentChannel={currentChannel}
+      />
+    </Grid.Column>
+  </Grid>
+)
+
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser,
+  currentChannel: state.channel.currentChannel,
+  userPosts: state.channel.userPosts,
+})
+
+export default connect(mapStateToProps)(App)
