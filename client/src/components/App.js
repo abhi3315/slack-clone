@@ -2,7 +2,7 @@ import React from "react"
 import { Grid } from "semantic-ui-react"
 import { connect } from "react-redux"
 import SidePanel from "./SidePanel/SidePanel"
-import Messages from "./Messages/Messages"
+// import Messages from "./Messages/Messages"
 import MetaPanel from "./MetaPanel/MetaPanel"
 
 const App = ({ currentUser, currentChannel, userPosts }) => (
@@ -10,11 +10,11 @@ const App = ({ currentUser, currentChannel, userPosts }) => (
     <SidePanel key={currentUser && currentUser.uid} currentUser={currentUser} />
 
     <Grid.Column style={{ marginLeft: 270 }}>
-      <Messages
+      {/* <Messages
         key={currentChannel && currentChannel.id}
         currentChannel={currentChannel}
         currentUser={currentUser}
-      />
+      /> */}
     </Grid.Column>
 
     <Grid.Column width={4}>

@@ -6,7 +6,6 @@ import {
     Button,
     Header,
     Message,
-    Icon
 } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { loginUser } from '../../helper/api'

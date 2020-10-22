@@ -80,3 +80,24 @@ export const addNewChannel = async ({ channelName, channelDetails }) => {
         return false
     }
 }
+
+export const getAllChannels = async () => {
+    const token = localStorage.getItem("token")
+    if (!token) return false
+
+    try {
+        const response = await (await fetch(`${serverUri}/channels`, {
+            method: 'GET',
+            headers: {
+                Authorization: token
+            }
+        })).json()
+
+        if (response.error) return false
+
+        return response
+
+    } catch (e) {
+        return false
+    }
+}

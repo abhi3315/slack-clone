@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import MessagesHeader from "./MessagesHeader"
 import MessageForm from "./MessageForm"
 import { Segment, Comment } from "semantic-ui-react"
-import firebase from "../../firebase"
 import Message from "./Message"
 import { connect } from "react-redux"
 import { setUserPosts } from "../../actions"
@@ -10,13 +9,11 @@ import Skeleton from "./Skeleton"
 
 class Messages extends Component {
   state = {
-    messagesRef: firebase.database().ref("messages"),
     messages: [],
     messagesLoading: true,
     channel: this.props.currentChannel,
     isChannelStarred: false,
     user: this.props.currentUser,
-    usersRef: firebase.database().ref("users"),
     numUniqueUsers: "",
     searchTerm: "",
     searchLoading: false,
