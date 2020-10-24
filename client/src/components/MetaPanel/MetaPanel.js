@@ -4,8 +4,7 @@ import {
   Accordion,
   Header,
   Icon,
-  Image,
-  List,
+  Image
 } from "semantic-ui-react"
 
 class MetaPanel extends Component {
@@ -23,25 +22,8 @@ class MetaPanel extends Component {
     })
   }
 
-  formatCount = num => (num > 1 || num === 0 ? `${num} posts` : `${num} post`)
-
-  displayTopPosters = posts =>
-    Object.entries(posts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([key, val], i) => (
-        <List.Item key={i} className="post-item">
-          <Image avatar src={val.avatar} />
-          <List.Content>
-            <List.Header as="a">{key}</List.Header>
-            <List.Description>{this.formatCount(val.count)}</List.Description>
-          </List.Content>
-        </List.Item>
-      ))
-      .slice(0, 5)
-
   render() {
     const { activeIndex, channel } = this.state
-    const { userPosts } = this.props
 
     return (
       <Segment loading={!channel}>
@@ -64,19 +46,6 @@ class MetaPanel extends Component {
 
           <Accordion.Title
             active={activeIndex === 1}
-            index={1}
-            onClick={this.setActiveIndex}
-          >
-            <Icon name="dropdown" />
-            <Icon name="user circle" />
-            Top Posters
-          </Accordion.Title>
-          <Accordion.Content active={activeIndex === 1}>
-            <List>{userPosts && this.displayTopPosters(userPosts)}</List>
-          </Accordion.Content>
-
-          <Accordion.Title
-            active={activeIndex === 2}
             index={2}
             onClick={this.setActiveIndex}
           >

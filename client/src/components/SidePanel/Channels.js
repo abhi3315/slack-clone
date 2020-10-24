@@ -9,7 +9,7 @@ import {
 } from "semantic-ui-react"
 import { connect } from "react-redux"
 import { addNewChannel } from '../../helper/api'
-import { setCurrentChannel } from "../../actions"
+import { setCurrentChannel, setUserPosts } from "../../actions"
 import { getAllChannels } from '../../helper/api'
 
 class Channels extends Component {
@@ -28,6 +28,7 @@ class Channels extends Component {
       .then(channels => {
         this.setState({ channels })
         this.props.setCurrentChannel(channels[0])
+        this.props.setUserPosts(channels[0].messages)
       })
       .catch(e => console.log(e))
   }
@@ -58,22 +59,23 @@ class Channels extends Component {
   changeChannel = channel => {
     this.setActiveChannel(channel)
     this.props.setCurrentChannel(channel)
+    this.props.setUserPosts(channel.messages)
     this.setState({ channel })
   }
 
   setActiveChannel = channel => {
-    this.setState({ activeChannel: channel.id })
+    this.setState({ activeChannel: channel._id })
   }
 
   displayChannels = channels =>
     channels.length > 0 &&
     channels.map(channel => (
       <Menu.Item
-        key={channel.id}
+        key={channel._id}
         onClick={() => this.changeChannel(channel)}
         name={channel.name}
         style={{ opacity: 0.7 }}
-        active={channel.id === this.state.activeChannel}
+        active={channel._id === this.state.activeChannel}
       >
         # {channel.name}
       </Menu.Item>
@@ -138,4 +140,4 @@ class Channels extends Component {
   }
 }
 
-export default connect(null, { setCurrentChannel })(Channels)
+export default connect(null, { setCurrentChannel, setUserPosts })(Channels)

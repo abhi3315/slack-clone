@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Header, Segment, Input, Icon, Message } from 'semantic-ui-react'
+import { Header, Segment, Input } from 'semantic-ui-react'
 
 class MessageHeader extends Component {
     render() {
@@ -7,22 +7,13 @@ class MessageHeader extends Component {
             channelName,
             numUniqueUsers,
             handleSearchChange,
-            searchLoading,
-            handleStar,
-            isChannelStarred
+            searchLoading
         } = this.props
 
         return (
             <Segment clearing>
                 <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }} >
-                    <span>
-                        {channelName}
-                        <Icon
-                            onClick={handleStar}
-                            name={isChannelStarred ? "start" : "star outline"}
-                            color={isChannelStarred ? "yellow" : "black"}
-                        />
-                    </span>
+                    {channelName}
                     <Header.Subheader>{numUniqueUsers}</Header.Subheader>
                 </Header>
                 <Header floated="right">
@@ -32,7 +23,7 @@ class MessageHeader extends Component {
                         size="mini"
                         icon="search"
                         name="searchItem"
-                        placeHolder="Search Messages"
+                        placeholder="Search Messages"
                     />
                 </Header>
             </Segment>
