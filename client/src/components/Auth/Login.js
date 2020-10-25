@@ -38,7 +38,7 @@ class Login extends Component {
                     })
                     return
                 }
-                this.props.history.push("/");
+                window.location.reload()
             }).catch(err => {
                 this.setState({
                     errors: this.state.errors.concat(err),

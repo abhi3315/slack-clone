@@ -71,10 +71,9 @@ export const addNewChannel = async ({ channelName, channelDetails }) => {
             body: JSON.stringify({ name: channelName, details: channelDetails })
         })).json()
 
-        console.log(response)
         if (response.error) return false
 
-        return response.user
+        return response
 
     } catch (e) {
         return false
@@ -98,6 +97,73 @@ export const getAllChannels = async () => {
         return response
 
     } catch (e) {
+        return false
+    }
+}
+
+export const changeAvatar = async (formData) => {
+    const token = localStorage.getItem("token")
+    if (!token) return false
+
+    try {
+        const response = await (await fetch(`${serverUri}/user/avatar`, {
+            method: 'POST',
+            headers: {
+                Authorization: token
+            },
+            body: formData
+        })).json()
+
+        if (response.error) return false
+
+        return response
+
+    } catch (e) {
+        return false
+    }
+}
+
+export const sendMessage = async (formData) => {
+    const token = localStorage.getItem("token")
+    if (!token) return false
+
+    try {
+        const response = await (await fetch(`${serverUri}/messages`, {
+            method: 'POST',
+            headers: {
+                Authorization: token
+            },
+            body: formData
+        })).json()
+
+        if (response.error) return false
+
+        return response
+
+    } catch (e) {
+        return false
+    }
+}
+
+export const logoutUser = async () => {
+    const token = localStorage.getItem("token")
+    if (!token) return false
+
+    try {
+        const response = await (await fetch(`${serverUri}/users/logout`, {
+            method: 'POST',
+            headers: {
+                Authorization: token
+            }
+        })).json()
+
+        if (response.error) return false
+
+        localStorage.removeItem('token')
+        return true
+
+    } catch (e) {
+        console.log(e);
         return false
     }
 }

@@ -7,10 +7,14 @@ import {
   Input,
   Button,
 } from "semantic-ui-react"
+import Pusher from 'pusher-js'
 import { connect } from "react-redux"
 import { addNewChannel } from '../../helper/api'
 import { setCurrentChannel, setUserPosts } from "../../actions"
 import { getAllChannels } from '../../helper/api'
+
+const PUSHER_APP_KEY = '3d220163f622a8b240af'
+const PUSHER_APP_CLUSTER = 'ap2'
 
 class Channels extends Component {
   state = {
@@ -31,6 +35,26 @@ class Channels extends Component {
         this.props.setUserPosts(channels[0].messages)
       })
       .catch(e => console.log(e))
+
+    this.pusher = new Pusher(PUSHER_APP_KEY, {
+      cluster: PUSHER_APP_CLUSTER,
+      encrypted: true,
+    })
+
+    this.channels = this.pusher.subscribe('channels')
+    this.channels.bind('inserted', this.addChannelToState.bind(this))
+
+    this.messages = this.pusher.subscribe('messages')
+    this.messages.bind('inserted', this.addMessageToState)
+  }
+
+  addChannelToState = (channel) => {
+    const { channels } = this.state
+    this.setState({ channels: channels.concat([channel]) })
+  }
+
+  addMessageToState = (message) => {
+    console.log(message);
   }
 
   addChannel = () => {
@@ -41,7 +65,7 @@ class Channels extends Component {
         this.closeModal()
         console.log("channel added")
       }).catch(err => {
-        console.log(err);
+        console.log(err)
       })
   }
 

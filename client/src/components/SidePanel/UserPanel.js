@@ -9,17 +9,14 @@ import {
   Input,
   Button,
 } from "semantic-ui-react"
+import { changeAvatar, logoutUser } from '../../helper/api'
 
 class UserPanel extends Component {
   state = {
     user: this.props.currentUser,
     modal: false,
     image: "",
-    blob: "",
-    uploadedCroppedImage: "",
-    metadata: {
-      contentType: "image/jpeg",
-    },
+    file: null
   }
 
   openModal = () => this.setState({ modal: true })
@@ -48,11 +45,16 @@ class UserPanel extends Component {
     },
   ]
 
-  // uploadCroppedImage = () => {
-  // }
-
-  // changeAvatar = () => {
-  // }
+  uploadImage = () => {
+    const formData = new FormData()
+    formData.append('avatar', this.state.file)
+    changeAvatar(formData)
+      .then(user => {
+        if (!user) return
+        this.setState({ user })
+        this.closeModal()
+      })
+  }
 
   handleChange = event => {
     const file = event.target.files[0]
@@ -61,13 +63,19 @@ class UserPanel extends Component {
     if (file) {
       reader.readAsDataURL(file)
       reader.addEventListener("load", () => {
-        this.setState({ image: reader.result })
+        this.setState({ image: reader.result, file })
       })
     }
+
+    console.log(this.state.image);
   }
 
-  // handleSignout = () => {
-  // }
+  handleSignout = () => {
+    logoutUser().then(res => {
+      if (!res) return console.log('Unable to logout')
+      window.location.reload()
+    })
+  }
 
   render() {
     const { user, modal, image } = this.state

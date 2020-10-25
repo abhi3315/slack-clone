@@ -47,7 +47,7 @@ class Messages extends Component {
       return messages.length > 0 &&
         messages.map(message => (
           <Message
-            key={message.timestamp}
+            key={message._id}
             message={message}
             user={this.state.user}
           />
