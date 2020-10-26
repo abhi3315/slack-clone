@@ -30,16 +30,12 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 7,
+        minlength: 6,
         trim: true,
         validate(value) {
             if (value.toLowerCase().includes('password'))
                 throw new Error('Provide a strong password!')
         }
-    },
-    starred: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Channel'
     },
     tokens: [{
         token: {

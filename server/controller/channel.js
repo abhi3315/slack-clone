@@ -17,7 +17,7 @@ exports.createChannel = async (req, res) => {
 
 exports.getAllChannel = async (req, res) => {
     try {
-        const channels = await Channel.findOne({})
+        const channels = await Channel.find()
             .populate({ path: 'messages' })
             .sort({ createdAt: 1 })
             .exec()

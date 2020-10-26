@@ -1,5 +1,6 @@
 const path = require('path')
 const Message = require('../models/Message')
+require('dotenv').config()
 
 exports.createMessage = async (req, res) => {
     try {
@@ -13,7 +14,8 @@ exports.createMessage = async (req, res) => {
             file.mv(`${__dirname}/../uploads/message/${newFileName}`, (err) => {
                 console.log(err)
             })
-            req.body.image = `/message/${newFileName}`
+            req.body.image = `${process.env.host}/message/${newFileName}`
+            console.log(`${process.env.host}/message/${newFileName}`);
         }
         const message = await Message.create({ ...req.body })
         res.status(201).send(message)

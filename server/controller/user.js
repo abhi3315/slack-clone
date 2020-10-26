@@ -1,5 +1,7 @@
+const path = require('path')
 const User = require('../models/User')
-var gravatar = require('gravatar')
+const gravatar = require('gravatar')
+require('dotenv').config()
 
 exports.create = async (req, res) => {
     const user = new User(req.body)
@@ -28,7 +30,7 @@ exports.logout = async (req, res) => {
     try {
         req.user.tokens = []
         await req.user.save()
-        res.send()
+        res.status(200).send({ success: true })
     } catch (e) {
         res.status(500).send({ error: e.message })
     }
@@ -37,17 +39,18 @@ exports.logout = async (req, res) => {
 exports.changeAvatar = async (req, res) => {
     try {
         if (req.files) {
-            var file = req.files.avatar
+            const file = req.files.avatar
             name = file.name
             newFileName = file.name.split('.')[0] + '-' + Date.now() + path.extname(file.name)
             file.mv(`${__dirname}/../uploads/avatar/${newFileName}`, (err) => {
                 console.log(err)
             })
-            req.user.avatar = `/avatar/${newFileName}`
+            req.user.avatar = `${process.env.host}/avatar/${newFileName}`
             await req.user.save()
             res.send(req.user)
         }
     } catch (e) {
+        console.log(e);
         res.status(500).send({ error: e.message })
     }
 }
