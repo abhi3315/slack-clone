@@ -15,14 +15,13 @@ class FileModal extends Component {
     }
   }
 
-  sendFile = () => {
+  sendFileMessage = () => {
     const { file } = this.state
-    const { uploadFile, closeModal } = this.props
+    const { sendFile, closeModal } = this.props
 
     if (file !== null) {
       if (this.isAuthorized(file.name)) {
-        const metadata = { contentType: mime.lookup(file.name) }
-        uploadFile(file, metadata)
+        sendFile(file)
         closeModal()
         this.clearFile()
       }
@@ -50,7 +49,7 @@ class FileModal extends Component {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button onClick={this.sendFile} color="green" inverted>
+          <Button onClick={this.sendFileMessage} color="green" inverted>
             <Icon name="checkmark" /> Send
           </Button>
           <Button color="red" inverted onClick={closeModal}>

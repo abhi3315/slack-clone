@@ -54,7 +54,18 @@ class Channels extends Component {
   }
 
   addMessageToState = (message) => {
-    console.log(message);
+    try {
+      let { channels } = this.state
+      channels.forEach((channel, index) => {
+        if (channel._id === message.channel) {
+          channels[index].messages.push(message)
+          this.setState({ channels })
+          this.props.setUserPosts(channels[index].messages)
+        }
+      })
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   addChannel = () => {

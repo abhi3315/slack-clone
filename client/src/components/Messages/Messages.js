@@ -5,15 +5,36 @@ import { Segment, Comment } from "semantic-ui-react"
 import Message from "./Message"
 import { connect } from "react-redux"
 import Skeleton from "./Skeleton"
+import Pusher from 'pusher-js'
+
+const PUSHER_APP_KEY = '3d220163f622a8b240af'
+const PUSHER_APP_CLUSTER = 'ap2'
 
 class Messages extends Component {
   state = {
+    messages: this.props.userPosts,
     channel: this.props.currentChannel,
     isChannelStarred: false,
     user: this.props.currentUser,
     searchTerm: "",
     searchLoading: false,
     searchResults: [],
+  }
+
+  componentDidMount() {
+    this.pusher = new Pusher(PUSHER_APP_KEY, {
+      cluster: PUSHER_APP_CLUSTER,
+      encrypted: true,
+    })
+
+    this.messages = this.pusher.subscribe('messages')
+    this.messages.bind('inserted', this.addMessageToState)
+  }
+
+  addMessageToState = (message) => {
+    const { messages } = this.state
+    if (messages)
+      this.setState({ messages: messages.concat([message]) })
   }
 
   handleSearchChange = e => {
@@ -75,7 +96,7 @@ class Messages extends Component {
       isChannelStarred,
     } = this.state
 
-    const messages = this.props.userPosts
+    const { messages } = this.state
 
     return (
       <React.Fragment>

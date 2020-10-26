@@ -123,7 +123,7 @@ export const changeAvatar = async (formData) => {
     }
 }
 
-export const sendMessage = async (formData) => {
+export const addNewMessage = async (formData) => {
     const token = localStorage.getItem("token")
     if (!token) return false
 

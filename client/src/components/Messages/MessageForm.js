@@ -4,10 +4,10 @@ import { Picker, emojiIndex } from "emoji-mart"
 import "emoji-mart/css/emoji-mart.css"
 import FileModal from "./FileModal"
 import ProgressBar from "./ProgressBar"
+import { addNewMessage } from '../../helper/api'
 
 class MessageForm extends Component {
   state = {
-    uploadTask: null,
     uploadState: "",
     percentUploaded: 0,
     message: "",
@@ -17,13 +17,6 @@ class MessageForm extends Component {
     errors: [],
     modal: false,
     emojiPicker: false,
-  }
-
-  componentWillUnmount() {
-    if (this.state.uploadTask !== null) {
-      this.state.uploadTask.cancel()
-      this.setState({ uploadTask: null })
-    }
   }
 
   openModal = () => this.setState({ modal: true })
@@ -66,53 +59,21 @@ class MessageForm extends Component {
     })
   }
 
-  createMessage = (fileUrl = null) => {
-  }
 
   sendMessage = () => {
-    const { messagesRef } = this.props
-    const { message, channel } = this.state
-
-    if (message) {
-      this.setState({ loading: true })
-      messagesRef
-        .child(channel.id)
-        .push()
-        .set(this.createMessage())
-        .then(() => {
-          this.setState({ loading: false, message: "", errors: [] })
-        })
-        .catch(err => {
-          console.log(err)
-          this.setState({
-            loading: false,
-            errors: this.state.errors.concat(err),
-          })
-        })
-    } else {
-      this.setState({
-        errors: this.state.errors.concat({ message: "Add a message" }),
-      })
-    }
+    const formData = new FormData()
+    formData.append('content', this.state.message)
+    formData.append('channel', this.state.channel._id)
+    addNewMessage(formData)
+      .then(res => console.log(res))
   }
 
-  uploadFile = (file, metadata) => {
-  }
-
-  sendFileMessage = (fileUrl, ref, pathToUpload) => {
-    ref
-      .child(pathToUpload)
-      .push()
-      .set(this.createMessage(fileUrl))
-      .then(() => {
-        this.setState({ uploadState: "done" })
-      })
-      .catch(err => {
-        console.error(err)
-        this.setState({
-          errors: this.state.errors.concat(err),
-        })
-      })
+  sendFile = (file) => {
+    const formData = new FormData()
+    formData.append('image', file)
+    formData.append('channel', this.state.channel._id)
+    addNewMessage(formData)
+      .then(res => console.log(res))
   }
 
   render() {
@@ -143,7 +104,6 @@ class MessageForm extends Component {
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
           value={message}
-          ref={node => (this.messageInputRef = node)}
           style={{ marginBottom: "0.7em" }}
           label={
             <Button
@@ -180,7 +140,7 @@ class MessageForm extends Component {
         <FileModal
           modal={modal}
           closeModal={this.closeModal}
-          uploadFile={this.uploadFile}
+          sendFile={this.sendFile}
         />
         <ProgressBar
           uploadState={uploadState}

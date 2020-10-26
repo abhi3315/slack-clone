@@ -66,8 +66,6 @@ class UserPanel extends Component {
         this.setState({ image: reader.result, file })
       })
     }
-
-    console.log(this.state.image);
   }
 
   handleSignout = () => {
